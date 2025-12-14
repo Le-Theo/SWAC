@@ -76,7 +76,16 @@ export default class NavigationSPL extends Plugin {
             desc: 'Function or string to generate route_id'
         };
         if (!options.routeIdGenerator) {
-            this.options.enableRouteSave = null;
+            this.options.routeIdGenerator = null;
+        }
+
+        // Make routing dynamic
+        this.desc.opts[7] = {
+            name: 'routingMethod',
+            desc: 'Method used for calculating the routes (Poly,)'
+        };
+        if (!options.routingMethod) {
+            this.options.routingMethod = "poly";
         }
 
         // Attributes for internal usage
@@ -437,13 +446,12 @@ export default class NavigationSPL extends Plugin {
             return;
         }
 
-
         //TODO: make this dynamic
         // 0 = Classic, 1 = Polyline, 2 = Fast Route
-        let routingMethod = 1;
+        let routingMethod = this.options.routingMethod;
 
         // if routingMethod is classic use this
-        if (this.options.createRouteFromData && routingMethod === 0) {
+        if (this.options.createRouteFromData && routingMethod === 'classic') {
             if (!this.lastaddedset) {
                 // On first added set do not create route, notice only
                 this.lastaddedset = set;
@@ -465,41 +473,40 @@ export default class NavigationSPL extends Plugin {
         }
 
         // if routingMethod is polyline use this
-        if (!this.options.createRouteFromData || routingMethod !== 1)
-            return;
+        if (this.options.createRouteFromData && routingMethod === 'poly') {
+            let comp = this.requestor.parent.swac_comp;
 
-        let comp = this.requestor.parent.swac_comp;
-
-        // read coordinates
-        var lat1 = this.lastaddedset[comp.options.latAttr];
-        var lon1 = this.lastaddedset[comp.options.lonAttr]
-        var lat2 = set[comp.options.latAttr];
-        var lon2 = set[comp.options.lonAttr];
-        if (!lat1 || !lon1 || !lat2 || !lon2) {     // validation
-            Msg.warn("Polyline skipped — invalid coordinates:", { lat1, lon1, lat2, lon2 });
-            this.lastaddedset = set;
-            return;
-        }
-
-        const poly = L.polyline(
-            [
-                [lat1, lon1],
-                [lat2, lon2]
-            ],
-            {
-                color: "sienna",
-                weight: 4,
-                opacity: 0.9
+            // read coordinates
+            var lat1 = this.lastaddedset[comp.options.latAttr];
+            var lon1 = this.lastaddedset[comp.options.lonAttr]
+            var lat2 = set[comp.options.latAttr];
+            var lon2 = set[comp.options.lonAttr];
+            if (!lat1 || !lon1 || !lat2 || !lon2) {     // validation
+                Msg.warn("Polyline skipped — invalid coordinates:", { lat1, lon1, lat2, lon2 });
+                this.lastaddedset = set;
+                return;
             }
-        );
-        poly.addTo(comp.viewer)
-        this.lastaddedset = set;
-        
-        // pan to last location
-        comp.zoomToSet(set);
 
-        // update last point
-        this.lastaddedset = set;
+            const poly = L.polyline(
+                [
+                    [lat1, lon1],
+                    [lat2, lon2]
+                ],
+                {
+                    color: "sienna",
+                    weight: 4,
+                    opacity: 0.9
+                }
+            );
+            poly.addTo(comp.viewer)
+            this.lastaddedset = set;
+
+            // pan to last location
+            comp.zoomToSet(set);
+
+            // update last point
+            this.lastaddedset = set;
+        }
     }
 
     /**
