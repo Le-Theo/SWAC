@@ -728,6 +728,11 @@ export default class Worldmap2d extends View {
         L.DomEvent.on(this.requestor.querySelector('.swac_worldmap2d_plugins_area > div'), 'click', L.DomEvent.stopPropagation);
     }
 
+    /**
+     * Is called everytime a new datapoint is added
+     * 
+     * @return {void}
+     */
     afterAddSet(set, repeateds) {
         Msg.flow('Worldmap2d', 'afterAddSet(' + set.swac_fromName + '[' + set.id + '])', this.requestor);
         const geoJSON = {type: "Feature", geometry: {type: 'Point'}};
@@ -762,6 +767,11 @@ export default class Worldmap2d extends View {
         super.afterAddSet(set);
     }
 
+    /**
+     * Is called everytime a datapoint is removed
+     * 
+     * @return {void}
+     */
     afterRemoveSet(set) {
         // Search marker and remove
         this.removeMarker(this.markers[set.swac_fromName][set.id]);
@@ -863,6 +873,7 @@ export default class Worldmap2d extends View {
 
         return marker;
     }
+
     /**
      * Creates a Area from the given geoJSON feature.
      * 
@@ -937,6 +948,7 @@ export default class Worldmap2d extends View {
         let idx = this.markersArray.indexOf(marker);
         if (idx !== -1) this.markersArray.splice(idx, 1);
     }
+    
     /**
      * Removes given markers and Area from the map.
      * @param {Object} marker The markers that will be removed
