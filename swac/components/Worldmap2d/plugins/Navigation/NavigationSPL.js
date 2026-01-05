@@ -334,6 +334,7 @@ export default class NavigationSPL extends Plugin {
         });
     } // end of init()
 
+
     addWaypointInput() {
         const index = this.navigationobj.waypoints.length;
 
@@ -650,6 +651,11 @@ export default class NavigationSPL extends Plugin {
         }
     }
 
+    /*
+     * Creates list of points for navigation
+     * 
+     * @return {void}
+     */
     buildRoutingWaypoints() {
         const points = [];
 
@@ -683,6 +689,11 @@ export default class NavigationSPL extends Plugin {
         return points;
     }
 
+    /*
+     * Saves points into database
+     * 
+     * @return {void}
+     */
     saveRoute() {
         if (!this.options.enableRouteSave || !this.options.routeSaveTarget) {
             return;
