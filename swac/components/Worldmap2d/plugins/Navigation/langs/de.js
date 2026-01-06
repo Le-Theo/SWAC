@@ -8,6 +8,7 @@ var Worldmap2d_Navigation_de = {
   start_button: 'Start',
   reset_button: 'Zurücksetzen',
   route_instructions: 'Routenbeschreibung',
+  save_route: 'Route speichern',
 };
 
 export default Worldmap2d_Navigation_de;

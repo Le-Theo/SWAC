@@ -8,6 +8,7 @@ var Worldmap2d_navigation_en = {
   start_button: 'Start',
   reset_button: 'Reset',
   route_instructions: 'Route Instructions',
+  save_route: 'Save Route',
 };
 
 export default Worldmap2d_navigation_en;
